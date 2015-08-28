@@ -66,7 +66,7 @@ module arbiter_round_robin
    generate 
       for (i=0; i<Port*2; i++) begin
          assign data_ord[i] = grant[i] ? 0 : in_data[i];
-         assign in_ready[i] = grant[i] && out_ready;
+         assign in_ready[i] = (grant[i] || ~|in_valid) && out_ready;
          for (j=0; j<Width; j++) begin
             assign data_shuffle[j][i] = data_ord[i][j];
          end
@@ -76,6 +76,6 @@ module arbiter_round_robin
       end
    endgenerate
 
-   assign out_valid = |grant;
+   assign out_valid = |in_valid;
 
 endmodule // arbiter_round_robin
